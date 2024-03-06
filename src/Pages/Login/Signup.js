@@ -5,6 +5,7 @@ import PrimaryButton from '../../Components/Button/PrimaryButton'
 import useAuth from '../../hooks/useAuth'
 import toast from 'react-hot-toast'
 import SmallSpinner from '../../Components/Spinner/SmallSpinner'
+import { setAuthToken } from '../../api/auth'
 
 const Signup = () => {
   const { createUser, updateUserProfile, signInWithGoogle, verifyEmail, loading, setLoading } = useAuth();
@@ -37,6 +38,8 @@ const Signup = () => {
         createUser(email, password)
           .then(result => {
             const createdUser = result.user;
+            //get token
+            setAuthToken(result.user);
             updateUserProfile(name, imgData.data.display_url)
               .then(
                 verifyEmail()
@@ -68,6 +71,8 @@ const Signup = () => {
     signInWithGoogle()
       .then(result => {
         console.log(result.user);
+        //get token
+        setAuthToken(result.user);
         navigate(from, { replace: true })
       })
       .catch(err => {

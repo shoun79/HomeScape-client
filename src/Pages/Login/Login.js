@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import SmallSpinner from '../../Components/Spinner/SmallSpinner';
 import PassResetModal from '../../Components/PassResetModal/PassResetModal';
 import { useState } from 'react';
+import { setAuthToken } from '../../api/auth';
 
 const Login = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -24,6 +25,9 @@ const Login = () => {
     signIn(email, password)
       .then(result => {
         console.log(result.user);
+
+        //get token
+        setAuthToken(result.user);
         toast.success('Login Successful')
         navigate(from, { replace: true })
       })
@@ -40,6 +44,8 @@ const Login = () => {
     signInWithGoogle()
       .then(result => {
         console.log(result.user);
+        //get token
+        setAuthToken(result.user);
         navigate(from, { replace: true })
       })
       .catch(err => {
