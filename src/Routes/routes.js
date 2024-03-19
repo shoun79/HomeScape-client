@@ -14,6 +14,13 @@ import DashboardLayout from '../Layout/DashboardLayout'
 import Welcome from '../Pages/Dashboard/Welcome'
 import MyBookings from '../Pages/Dashboard/MyBookings'
 import BecomeAHost from '../Pages/Dashboard/BecomeAHost'
+import AllUsers from '../Pages/Dashboard/AllUsers'
+import AllBookings from '../Pages/Dashboard/AllBookings'
+import AddHome from '../Pages/Dashboard/AddHome'
+import ManageHomes from '../Pages/Dashboard/ManageHomes'
+import AllHome from '../Pages/AllHome'
+import AdminRoute from './AdminRoute'
+import HostRoute from './HostRoute'
 
 const router = createBrowserRouter([
   {
@@ -24,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Home />,
+      },
+      {
+        path: '/all-homes',
+        element: <AllHome></AllHome>
       },
       {
         path: '/login',
@@ -38,8 +49,9 @@ const router = createBrowserRouter([
         element: <ComingSoon />,
       },
       {
-        path: '/service-details',
-        element: <Details></Details>
+        path: '/service-details/:id',
+        element: <Details></Details>,
+        loader: ({ params }) => fetch(`${process.env.REACT_APP_API_URL}/home/${params.id}`)
       },
       {
         path: '/search-result',
@@ -57,7 +69,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '',
-        element: <Welcome></Welcome>
+        element: <PrivateRoute> <Welcome></Welcome></PrivateRoute>
       },
       {
         path: 'my-bookings',
@@ -66,6 +78,22 @@ const router = createBrowserRouter([
       {
         path: 'become-host',
         element: <PrivateRoute><BecomeAHost></BecomeAHost></PrivateRoute>
+      },
+      {
+        path: 'all-users',
+        element: <AdminRoute><AllUsers></AllUsers></AdminRoute>
+      },
+      {
+        path: 'all-bookings',
+        element: <AdminRoute><AllBookings></AllBookings></AdminRoute>
+      },
+      {
+        path: 'add-home',
+        element: <HostRoute><AddHome></AddHome></HostRoute>
+      },
+      {
+        path: 'manage-homes',
+        element: <HostRoute><ManageHomes></ManageHomes></HostRoute>
       }
     ]
 

@@ -1,8 +1,21 @@
 
+import { useEffect, useState } from 'react';
 import useAuth from '../../hooks/useAuth'
+import { getUserRole } from '../../api/user';
 
 const Welcome = () => {
   const { user } = useAuth();
+  const [role, setRole] = useState(null);
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getUserRole(user?.email)
+      .then(data => {
+
+        setRole(data)
+        setLoading(false);
+      })
+  }, [user?.email]);
 
   return (
     <div className='h-screen text-gray-700 flex flex-col justify-center items-center pb-16'>
@@ -13,7 +26,7 @@ const Welcome = () => {
         <p className='text-3xl md:text-6xl font-bold'>To</p>
       </div>
       <div className='flex justify-center text-gray-500 items-center mt-4'>
-        <p className='text-3xl font-medium'>User Dashboard</p>
+        <p className='text-3xl font-medium'>{!loading && role ? role === 'admin' ? 'Admin' : role === 'requested' ? 'User' : 'Host' : 'User'} Dashboard</p>
       </div>
     </div>
   )

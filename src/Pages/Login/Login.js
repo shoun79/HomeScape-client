@@ -4,16 +4,17 @@ import PrimaryButton from '../../Components/Button/PrimaryButton'
 import useAuth from '../../hooks/useAuth';
 import toast from 'react-hot-toast';
 import SmallSpinner from '../../Components/Spinner/SmallSpinner';
-import PassResetModal from '../../Components/PassResetModal/PassResetModal';
+
 import { useState } from 'react';
 import { setAuthToken } from '../../api/auth';
+import PassResetModal from '../../Components/Modal/PassResetModal/PassResetModal';
 
 const Login = () => {
   const [openModal, setOpenModal] = useState(false);
   const { signIn, signInWithGoogle, loading, setLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.form?.pathname || '/';
+  const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = e => {
     e.preventDefault();

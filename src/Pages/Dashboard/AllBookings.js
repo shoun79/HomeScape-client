@@ -1,22 +1,14 @@
 import React, { useEffect, useState } from 'react'
-
-
-import useAuth from '../../hooks/useAuth'
+import { getAllBookings } from '../../api/booking';
 import Spinner from '../../Components/Spinner/Spinner';
-import { getUserBookings } from '../../api/booking';
 import TableRow from '../../Components/TableRow';
-import { Link } from 'react-router-dom';
-import PrimaryButton from '../../Components/Button/PrimaryButton';
 
-
-
-const MyBookings = () => {
-  const { user } = useAuth();
-  const [loading, setLoading] = useState(true)
-  const [bookings, setBookings] = useState([]);
+const AllBookings = () => {
+  const [bookings, setBookings] = useState(null)
+  const [loading, setLoading] = useState(true);
 
   const fetchBookings = () => {
-    getUserBookings(user?.email)
+    getAllBookings()
       .then(data => {
         setLoading(false)
         setBookings(data)
@@ -26,11 +18,16 @@ const MyBookings = () => {
   useEffect(() => {
     fetchBookings();
 
-  }, [user?.email]);
+  }, []);
 
+  // useEffect(() => {
+  //   setLoading(true)
+  //   getAllBookings().then(data => {
 
-
-
+  //     setBookings(data)
+  //     setLoading(false)
+  //   })
+  // }, [user]);
   return (
     <>
       {loading ? (
@@ -38,12 +35,7 @@ const MyBookings = () => {
       ) :
         bookings.length < 1 ? <>
           <div className='h-screen text-gray-600 gap-5 flex flex-col justify-center items-center pb-16 text-xl lg:text-3xl'>
-            You haven't booked any home yet.
-            <Link to='/all-homes'>
-              <PrimaryButton classes='px-6 py-2 text-medium font-semibold rounded-full'>
-                Browse Homes
-              </PrimaryButton>
-            </Link>
+            There's no booking data available right now.
           </div>
         </> :
           (
@@ -109,4 +101,4 @@ const MyBookings = () => {
   )
 }
 
-export default MyBookings
+export default AllBookings

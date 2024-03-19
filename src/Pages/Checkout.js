@@ -1,74 +1,43 @@
-import React, { Fragment, useContext, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { Tab } from '@headlessui/react'
-
-import { AuthContext } from '../contexts/AuthProvider'
-// import { saveBooking } from '../api/bookings'
-import toast from 'react-hot-toast'
 import ReviewHouse from '../Components/ReviewHouse'
 import CheckoutCart from '../Components/CheckoutCart'
 import WhosComing from '../Components/WhosComing'
-import Payment from '../Components/Payment'
-import { saveBooking } from '../api/booking'
+import { Elements } from "@stripe/react-stripe-js";
+import useAuth from '../hooks/useAuth'
+import { useLocation } from 'react-router-dom'
+import CheckoutForm from '../Components/Form/CheckoutForm'
+import { loadStripe } from "@stripe/stripe-js";
 
 const Checkout = () => {
-    const { user } = useContext(AuthContext)
-    const homeData = {
-        _id: '60ehjhedhjdj3434',
-        location: 'Dhaka, Bangladesh',
-        title: 'Huge Apartment with 4 bedrooms',
-        image: 'https://i.ibb.co/YPXktqs/Home1.jpg',
-        from: '17/11/2022',
-        to: '21/11/2022',
-        host: {
-            name: 'John Doe',
-            image: 'https://i.ibb.co/6JM5VJF/photo-1633332755192-727a05c4013d.jpg',
-            email: 'johndoe@gmail.com',
-        },
-        price: 98,
-        total_guest: 4,
-        bedrooms: 2,
-        bathrooms: 2,
-        ratings: 4.8,
-        reviews: 64,
-    }
+    const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PK);
+
+    const { user } = useAuth();
+    const { state: checkoutData } = useLocation();
+    const { homeData, totalNights, totalPrice } = checkoutData;
 
     const [bookingData, setBookingData] = useState({
-        homeId: homeData._id,
+        home: {
+            homeId: homeData?._id,
+            image: homeData?.image,
+            title: homeData?.title,
+            location: homeData?.location,
+            from: homeData?.from,
+            to: homeData?.to,
+
+        },
         hostEmail: homeData?.host?.email,
         message: '',
-        totalPrice: parseFloat(homeData?.price) + 31,
+        totalPrice: parseFloat(totalPrice),
         guestEmail: user?.email,
+        guestName: user?.displayName,
 
 
     });
+
     const [selectedIndex, setSelectedIndex] = useState(0)
 
-    const handleBooking = () => {
-        console.log(bookingData)
-        saveBooking(bookingData)
-            .then(data => {
-                console.log(data);
-                if (data.insertedId) {
 
-                    toast.success('Booking Successful')
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                toast.error(err.message)
-            })
-    }
-
-    //     saveBooking(bookingData)
-    //         .then(data => {
-    //             console.log(data)
-    //             toast.success('Booking Successful!')
-    //         })
-    //         .catch(err => {
-    //             console.log(err)
-    //             toast.error(err?.message)
-    //         })
-    // }
 
     return (
         <div className='md:flex gap-5 items-start justify-between sm:mx-10 md:mx-20 px-4 lg:mx-40 py-4'>
@@ -143,7 +112,11 @@ const Checkout = () => {
                     </Tab.List>
                     <Tab.Panels>
                         <Tab.Panel>
-                            <ReviewHouse setSelectedIndex={setSelectedIndex} />
+                            <ReviewHouse
+                                setSelectedIndex={setSelectedIndex}
+                                homeData={homeData}
+                                totalNights={totalNights}
+                            />
                         </Tab.Panel>
                         <Tab.Panel>
                             {/* WhosComing Comp */}
@@ -156,7 +129,10 @@ const Checkout = () => {
                         </Tab.Panel>
                         <Tab.Panel>
                             {/* Payment Comp */}
-                            <Payment handleBooking={handleBooking} />
+                            <Elements stripe={stripePromise} >
+                                <CheckoutForm bookingData={bookingData} />
+                            </Elements>
+
 
                         </Tab.Panel>
                     </Tab.Panels>
@@ -164,7 +140,7 @@ const Checkout = () => {
             </div>
 
             {/* Cart */}
-            <CheckoutCart />
+            <CheckoutCart homeData={homeData} totalNights={totalNights} />
         </div>
     )
 }

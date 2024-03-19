@@ -1,17 +1,17 @@
 import React from 'react'
 import { ArrowRightIcon, StarIcon } from '@heroicons/react/24/solid'
 import { Link } from 'react-router-dom'
-const CheckoutCart = () => {
-  let totalNights = 2
-  let sub_total = 150
-  let total = 200
+import { format } from 'date-fns'
+const CheckoutCart = ({ homeData, totalNights }) => {
+  let sub_total = homeData?.price * totalNights;
+  let total = sub_total + 10 + 21;
 
   return (
     <div className='px-6 py-5 md:w-1/2 lg:w-1/3 w-full h-full rounded-md shadow-lg'>
       <div className='flex justify-between'>
         <div className='text-gray-900 text-xl title-font font-medium mb-2 w-1/2'>
           {' '}
-          Huge Apartment with 4 bedrooms
+          {homeData?.title}
         </div>
         <Link
           to='/service-details'
@@ -20,7 +20,7 @@ const CheckoutCart = () => {
           <img
             alt='e-commerce'
             className='object-cover object-center w-full h-full block'
-            src='https://i.ibb.co/YPXktqs/Home1.jpg'
+            src={homeData?.image}
           />
         </Link>
       </div>
@@ -31,15 +31,15 @@ const CheckoutCart = () => {
 
       <p>Dates</p>
       <div className='flex justify-between items-center p-2 border mt-1 mb-2'>
-        <div>11/06/2022</div>
+        <div>{format(new Date(homeData?.from), 'P')}</div>
         <div>
           <ArrowRightIcon className='h5 w-5' />
         </div>
-        <div>14/06/2022</div>
+        <div>{format(new Date(homeData?.to), 'P')}</div>
       </div>
 
       <div className='flex border-t border-gray-200 py-2'>
-        <span className='text-gray-500'>$100 x {totalNights} nights</span>
+        <span className='text-gray-500'>${homeData?.price} x {totalNights} nights</span>
         <span className='ml-auto text-gray-900'>${sub_total}</span>
       </div>
       <div className='flex border-t border-gray-200 py-2'>

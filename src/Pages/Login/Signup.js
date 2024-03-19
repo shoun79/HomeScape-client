@@ -73,6 +73,7 @@ const Signup = () => {
         console.log(result.user);
         //get token
         setAuthToken(result.user);
+        setLoading(false);
         navigate(from, { replace: true })
       })
       .catch(err => {

@@ -4,10 +4,12 @@ import { Link } from "react-router-dom";
 import { ArrowRightOnRectangleIcon, Bars3Icon } from '@heroicons/react/24/solid'
 import PrimaryButton from "../Button/PrimaryButton";
 import UserMenu from "./UserMenu";
-const Sidebar = () => {
-    const { user, logout } = useAuth();
-    const [isActive, setActive] = useState('false')
-    //console.log(role)
+import AdminMenu from "./AdminMenu";
+import HostMenu from "./HostMenu";
+const Sidebar = ({ role }) => {
+    const { user, logout, loading } = useAuth();
+    const [isActive, setActive] = useState('false');
+
     // Sidebar Responsive Handler
     const handleToggle = () => {
         setActive(!isActive)
@@ -67,12 +69,11 @@ const Sidebar = () => {
                     {/* Nav Items */}
                     <div className='flex flex-col justify-between flex-1 mt-6'>
                         <nav>
-                            {/* {role && role !== 'requested' ? (
+                            {role && role !== 'requested' ? (
                                 <>{role === 'admin' ? <AdminMenu /> : <HostMenu />} </>
                             ) : (
                                 <UserMenu />
-                            )} */}
-                            <UserMenu></UserMenu>
+                            )}
                         </nav>
                     </div>
                 </div>

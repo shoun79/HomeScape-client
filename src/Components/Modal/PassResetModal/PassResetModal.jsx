@@ -1,6 +1,6 @@
 
-import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import useAuth from "../../../hooks/useAuth";
 
 const PassResetModal = ({ openModal, setOpenModal }) => {
     const { resetPassword, setLoading } = useAuth();
